@@ -141,6 +141,22 @@ target_link_libraries(
 )
 endif(BUILD_ROS_NODE)
 
+
+
+# GTest
+if(BUILD_TESTS)
+enable_testing()
+#find_package(GTest REQUIRED)
+# Accepts the following variable as input:
+# GTEST_ROOT - (as a CMake or environment variable)
+#              The root directory of the gtest install prefix
+
+include_directories(${GTEST_ROOT}/include)
+list(APPEND GTEST_LINK_LIBS
+  ${GTEST_BOTH_LIBRARIES}
+  pthread
+)
+
 ## Test on dataset
 add_executable(
     dataset_main
@@ -153,21 +169,6 @@ target_link_libraries(
     rpg_open_remode
     rpg_open_remode_cuda
 )
-
-# GTest
-if(BUILD_TESTS)
-enable_testing()
-find_package(GTest REQUIRED)
-# Accepts the following variable as input:
-# GTEST_ROOT - (as a CMake or environment variable)
-#              The root directory of the gtest install prefix
-
-include_directories(${GTEST_ROOT}/include)
-list(APPEND GTEST_LINK_LIBS
-  ${GTEST_BOTH_LIBRARIES}
-  pthread
-)
-
 CUDA_ADD_LIBRARY(
     rpg_open_remode_test
     test/copy.cu

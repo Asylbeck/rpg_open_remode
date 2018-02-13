@@ -86,7 +86,7 @@ bool rmd::DepthmapNode::init()
 }
 
 void rmd::DepthmapNode::denseInputCallback(
-    const svo_msgs::DenseInputConstPtr &dense_input)
+    const svo_msgs::DenseInputWithFeaturesConstPtr &dense_input)
 {
   num_msgs_ += 1;
   if(!depthmap_)

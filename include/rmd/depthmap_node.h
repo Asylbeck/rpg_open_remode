@@ -22,7 +22,7 @@
 
 #include <rmd/publisher.h>
 
-#include <svo_msgs/DenseInput.h>
+#include <svo_msgs/DenseInputWithFeatures.h>
 #include <ros/ros.h>
 
 namespace rmd
@@ -44,7 +44,7 @@ public:
   DepthmapNode(ros::NodeHandle &nh);
   bool init();
   void denseInputCallback(
-      const svo_msgs::DenseInputConstPtr &dense_input);
+      const svo_msgs::DenseInputWithFeaturesConstPtr &dense_input);
 private:
   void denoiseAndPublishResults();
   void publishConvergenceMap();

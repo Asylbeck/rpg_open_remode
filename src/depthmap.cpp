@@ -40,6 +40,8 @@ rmd::Depthmap::Depthmap(size_t width,
   img_undistorted_32fc1_.create(height_, width_, CV_32FC1);
   img_undistorted_8uc1_.create(height_, width_, CV_8UC1);
   ref_img_undistorted_8uc1_.create(height_, width_, CV_8UC1);
+  ref_img_undistorted_8UC3_.create(height_, width_, CV_8UC3);
+  img_undistorted_8uc3_.create(height_, width_, CV_8UC3);
 }
 
 void rmd::Depthmap::initUndistortionMap(

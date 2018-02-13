@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  std::string dense_input_topic("/svo/dense_input");
+  std::string dense_input_topic("/svo/dense_input/0");
   ros::Subscriber dense_input_sub = nh.subscribe(
         dense_input_topic,
         1,

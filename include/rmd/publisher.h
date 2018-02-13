@@ -33,7 +33,9 @@ class Publisher
 {
 
   typedef pcl::PointXYZI PointType;
+  typedef pcl::PointXYZRGB PointTypeColor;
   typedef pcl::PointCloud<PointType> PointCloud;
+  typedef pcl::PointCloud<PointTypeColor> PointCloudColor;
 
 public:
 
