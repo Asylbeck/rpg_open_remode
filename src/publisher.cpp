@@ -21,7 +21,6 @@
 
 #include <sensor_msgs/image_encodings.h>
 #include <cv_bridge/cv_bridge.h>
-
 #include <Eigen/Eigen>
 
 rmd::Publisher::Publisher(ros::NodeHandle &nh,
@@ -35,7 +34,7 @@ rmd::Publisher::Publisher(ros::NodeHandle &nh,
   image_transport::ImageTransport it(nh_);
   depthmap_publisher_ = it.advertise("remode/depth",       10);
   conv_publisher_     = it.advertise("remode/convergence", 10);
-  pub_pc_ = nh_.advertise<PointCloud>("remode/pointcloud", 1);
+  pub_pc_ = nh_.advertise<PointCloudColor>("remode/pointcloud", 1);
 }
 
 void rmd::Publisher::publishDepthmap() const
@@ -85,8 +84,16 @@ void rmd::Publisher::publishPointCloud() const
           p.z = xyz.z;
           cp.z = xyz.z;
           const uint8_t intensity = ref_img.at<uint8_t>(y, x);
+          uint8_t red = 0, green = 0, blue = 0;
+          cv::Vec3i intensity_rgb = ref_img.at<cv::Vec3i>(y, x);
+          red = intensity_rgb.val[0];
+          green = intensity_rgb.val[1];
+          blue = intensity_rgb.val[2];
+          uint32_t rgb_c = ((uint32_t)red << 16 | (uint32_t)green << 8 | (uint32_t)blue);
+          cp.rgb = *reinterpret_cast<float*>(&rgb_c);
           p.intensity = intensity;
           pc_->push_back(p);
+          pcc_->push_back(cp);
         }
       }
     }
@@ -102,8 +109,10 @@ void rmd::Publisher::publishPointCloud() const
       timestamp = ros::Time::now();
 #endif
       pc_->header.frame_id = "/world";
+      pcc_->header.frame_id = "/world";
       pc_->header.stamp = timestamp;
-      pub_pc_.publish(pc_);
+      pcc_->header.stamp = timestamp;
+      pub_pc_.publish(pcc_);
       std::cout << "INFO: publishing pointcloud, " << pc_->size() << " points" << std::endl;
     }
   }
