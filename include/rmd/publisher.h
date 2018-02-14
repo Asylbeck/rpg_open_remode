@@ -59,6 +59,7 @@ private:
   image_transport::Publisher conv_publisher_;
 
   PointCloud::Ptr pc_;
+  PointCloudColor::Ptr pcc_;
   ros::Publisher pub_pc_;
 
   cv::Mat colored_;

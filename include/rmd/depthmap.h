@@ -56,7 +56,7 @@ public:
 
   void update(const cv::Mat &img_curr,
               const SE3<float> &T_curr_world);
-
+  void inputColorImage(const cv::Mat &img_8uc3);
   void downloadDepthmap();
   void downloadDenoisedDepthmap(float lambda, int iterations);
 
@@ -67,6 +67,8 @@ public:
 
 
   const cv::Mat getReferenceImage() const;
+
+  const cv::Mat getReferenceColorImage() const;
 
   size_t getConvergedCount() const;
   float  getConvergedPercentage() const;
@@ -103,6 +105,7 @@ public:
 
 private:
   void inputImage(const cv::Mat &img_8uc1);
+
 
   SeedMatrix seeds_;
 

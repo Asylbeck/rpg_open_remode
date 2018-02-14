@@ -28,6 +28,7 @@ rmd::Publisher::Publisher(ros::NodeHandle &nh,
                           std::shared_ptr<rmd::Depthmap> depthmap)
   : nh_(nh)
   , pc_(new PointCloud)
+  , pcc_(new PointCloudColor)
 {
   depthmap_ = depthmap;
   colored_.create(depthmap->getHeight(), depthmap_->getWidth(), CV_8UC3);
@@ -59,6 +60,7 @@ void rmd::Publisher::publishPointCloud() const
     const cv::Mat depth = depthmap_->getDepthmap();
     const cv::Mat convergence = depthmap_->getConvergenceMap();
     const cv::Mat ref_img = depthmap_->getReferenceImage();
+    const cv::Mat ref_img_color = depthmap_->getReferenceColorImage();
     const rmd::SE3<float> T_world_ref = depthmap_->getT_world_ref();
 
     const float fx = depthmap_->getFx();
@@ -75,9 +77,13 @@ void rmd::Publisher::publishPointCloud() const
         if( rmd::ConvergenceState::CONVERGED == convergence.at<int>(y, x) )
         {
           PointType p;
+          PointTypeColor cp;
           p.x = xyz.x;
+          cp.x = xyz.x;
           p.y = xyz.y;
+          cp.y = xyz.y;
           p.z = xyz.z;
+          cp.z = xyz.z;
           const uint8_t intensity = ref_img.at<uint8_t>(y, x);
           p.intensity = intensity;
           pc_->push_back(p);

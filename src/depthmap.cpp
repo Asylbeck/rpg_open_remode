@@ -40,7 +40,7 @@ rmd::Depthmap::Depthmap(size_t width,
   img_undistorted_32fc1_.create(height_, width_, CV_32FC1);
   img_undistorted_8uc1_.create(height_, width_, CV_8UC1);
   ref_img_undistorted_8uc1_.create(height_, width_, CV_8UC1);
-  ref_img_undistorted_8UC3_.create(height_, width_, CV_8UC3);
+  ref_img_undistorted_8uc3_.create(height_, width_, CV_8UC3);
   img_undistorted_8uc3_.create(height_, width_, CV_8UC3);
 }
 
@@ -107,6 +107,18 @@ void rmd::Depthmap::inputImage(const cv::Mat &img_8uc1)
   img_undistorted_8uc1_.convertTo(img_undistorted_32fc1_, CV_32F, 1.0f/255.0f);
 }
 
+void rmd::Depthmap::inputColorImage(const cv::Mat &img_8uc3)
+{
+  if(is_distorted_)
+  {
+    cv::remap(img_8uc3, img_undistorted_8uc3_, undist_map1_, undist_map2_, CV_INTER_LINEAR);
+  }
+  else
+  {
+    img_undistorted_8uc1_ = img_8uc3;
+  }
+}
+
 void rmd::Depthmap::downloadDepthmap()
 {
   seeds_.downloadDepthmap(reinterpret_cast<float*>(output_depth_32fc1_.data));
@@ -142,6 +154,11 @@ const cv::Mat_<int> rmd::Depthmap::getConvergenceMap() const
 const cv::Mat rmd::Depthmap::getReferenceImage() const
 {
   return ref_img_undistorted_8uc1_;
+}
+
+const cv::Mat rmd::Depthmap::getReferenceColorImage() const
+{
+  return img_undistorted_8uc1_;
 }
 
 size_t rmd::Depthmap::getConvergedCount() const
