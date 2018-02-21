@@ -115,7 +115,7 @@ void rmd::Depthmap::inputColorImage(const cv::Mat &img_8uc3)
   }
   else
   {
-    img_undistorted_8uc1_ = img_8uc3;
+    img_undistorted_8uc3_ = img_8uc3;
   }
 }
 
@@ -158,7 +158,7 @@ const cv::Mat rmd::Depthmap::getReferenceImage() const
 
 const cv::Mat rmd::Depthmap::getReferenceColorImage() const
 {
-  return img_undistorted_8uc1_;
+  return img_undistorted_8uc3_;
 }
 
 size_t rmd::Depthmap::getConvergedCount() const

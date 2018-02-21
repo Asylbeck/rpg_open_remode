@@ -106,7 +106,7 @@ void rmd::DepthmapNode::denseInputCallback(
                              sensor_msgs::image_encodings::MONO8);
     cv_bridge::CvImageConstPtr cv_img_ptr_color =
         cv_bridge::toCvShare(dense_input->image,
-                             dense_input);
+                             dense_input, sensor_msgs::image_encodings::BGR8);
     // assign the mono to img_8C1
     img_8uC1 = cv_img_ptr->image;
     // assign the color img to img_8C3
@@ -152,7 +152,7 @@ void rmd::DepthmapNode::denseInputCallback(
   case rmd::State::UPDATE:
   {
     depthmap_->update(img_8uC1, T_world_curr.inv());
-    depthmap_->inputColorImage(img_8uC3);
+    //depthmap_->inputColorImage(img_8uC3);
     const float perc_conv = depthmap_->getConvergedPercentage();
     const float dist_from_ref = depthmap_->getDistFromRef();
     std::cout << "INFO: percentage of converged measurements: " << perc_conv << "%" << std::endl;
