@@ -61,6 +61,8 @@ private:
   PointCloud::Ptr pc_;
   PointCloudColor::Ptr pcc_;
   ros::Publisher pub_pc_;
+  image_transport::Publisher pub_img_mono_;
+  image_transport::Publisher pub_img_bgr_;
   ros::Publisher pub_pcc_;
   cv::Mat colored_;
 };

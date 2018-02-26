@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     // process
     if(first_img)
     {
-      if(depthmap.setReferenceImage(img, T_world_curr.inv(), min_depth, max_depth))
+      if(depthmap.setReferenceImage(img, img, T_world_curr.inv(), min_depth, max_depth))
       {
         first_img = false;
       }

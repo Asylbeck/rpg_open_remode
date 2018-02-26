@@ -23,6 +23,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <Eigen/Eigen>
 
+
 rmd::Publisher::Publisher(ros::NodeHandle &nh,
                           std::shared_ptr<rmd::Depthmap> depthmap)
   : nh_(nh)
@@ -34,8 +35,8 @@ rmd::Publisher::Publisher(ros::NodeHandle &nh,
   image_transport::ImageTransport it(nh_);
   depthmap_publisher_ = it.advertise("remode/depth",       10);
   conv_publisher_     = it.advertise("remode/convergence", 10);
-  pub_pc_ = nh_.advertise<PointCloud>("remode/pointcloud", 1);
   pub_pcc_ = nh_.advertise<PointCloudColor>("remode/pointcloudcolored", 1);
+
 }
 
 void rmd::Publisher::publishDepthmap() const
@@ -59,10 +60,15 @@ void rmd::Publisher::publishPointCloud() const
 
     const cv::Mat depth = depthmap_->getDepthmap();
     const cv::Mat convergence = depthmap_->getConvergenceMap();
-    const cv::Mat ref_img = depthmap_->getReferenceImage();
     const cv::Mat ref_img_color = depthmap_->getReferenceColorImage();
     const rmd::SE3<float> T_world_ref = depthmap_->getT_world_ref();
+    
+    cv_bridge::CvImage img_bgr_msg;    
+    img_bgr_msg.header.frame_id = "/cam_mono";
+    img_bgr_msg.image = ref_img_color;
+    img_bgr_msg.encoding = sensor_msgs::image_encodings::BGR8;
 
+    pub_img_bgr_.publish(img_bgr_msg.toImageMsg());
     const float fx = depthmap_->getFx();
     const float fy = depthmap_->getFy();
     const float cx = depthmap_->getCx();
@@ -76,30 +82,22 @@ void rmd::Publisher::publishPointCloud() const
         const float3 xyz = T_world_ref * ( f * depth.at<float>(y, x) );
         if( rmd::ConvergenceState::CONVERGED == convergence.at<int>(y, x) )
         {
-          PointType p;
           PointTypeColor cp;
-          p.x = xyz.x;
           cp.x = xyz.x;
-          p.y = xyz.y;
           cp.y = xyz.y;
-          p.z = xyz.z;
           cp.z = xyz.z;
-          const uint8_t intensity = ref_img.at<uint8_t>(y, x);
-          uint8_t red = 0, green = 0, blue = 0;
           cv::Vec3i intensity_rgb = ref_img_color.at<cv::Vec3i>(y, x);
-          red = intensity_rgb.val[2];
-          green = intensity_rgb.val[1];
-          blue = intensity_rgb.val[0];
-          uint32_t rgb_c = ((uint32_t)red << 16 | (uint32_t)green << 8 | (uint32_t)blue);
+          uint8_t b = (uint8_t) (ref_img_color.data[ref_img_color.channels()*(ref_img_color.cols*y + x) + 0]);    
+          uint8_t g = (uint8_t) (ref_img_color.data[ref_img_color.channels()*(ref_img_color.cols*y + x) + 1]);
+          uint8_t r = (uint8_t) (ref_img_color.data[ref_img_color.channels()*(ref_img_color.cols*y + x) + 2]);
+          uint32_t rgb_c = ((uint32_t)r << 16 | (uint32_t)g << 8 | (uint32_t)b);
           cp.rgb = *reinterpret_cast<float*>(&rgb_c);
-          p.intensity = intensity;
-          pc_->push_back(p);
           pcc_->push_back(cp);
         }
       }
     }
   }
-  if (!pc_->empty())
+  if (!pcc_->empty())
   {
     if(nh_.ok())
     {
@@ -109,11 +107,8 @@ void rmd::Publisher::publishPointCloud() const
 #else
       timestamp = ros::Time::now();
 #endif
-      pc_->header.frame_id = "/world";
       pcc_->header.frame_id = "/world";
-      pc_->header.stamp = timestamp;
       pcc_->header.stamp = timestamp;
-      pub_pc_.publish(pc_);
       pub_pcc_.publish(pcc_);
       std::cout << "INFO: publishing pointcloud, " << pc_->size() << " points" << std::endl;
     }

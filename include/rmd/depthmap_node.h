@@ -21,7 +21,7 @@
 #include <rmd/depthmap.h>
 
 #include <rmd/publisher.h>
-
+#include <cv_bridge/cv_bridge.h>
 #include <svo_msgs/DenseInputWithFeatures.h>
 #include <ros/ros.h>
 

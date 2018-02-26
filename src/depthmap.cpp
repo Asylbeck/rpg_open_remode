@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <rmd/depthmap.h>
-
+#include <ros/ros.h>
+using namespace std;
 rmd::Depthmap::Depthmap(size_t width,
                         size_t height,
                         float fx,
@@ -64,12 +65,14 @@ void rmd::Depthmap::initUndistortionMap(
 
 bool rmd::Depthmap::setReferenceImage(
     const cv::Mat &img_curr,
+    const cv::Mat &img_col_curr,
     const rmd::SE3<float> &T_curr_world,
     const float &min_depth,
     const float &max_depth)
 {
   denoiser_->setLargeSigmaSq(max_depth-min_depth);
   inputImage(img_curr);
+  inputColorImage(img_col_curr);
   const bool ret = seeds_.setReferenceImage(reinterpret_cast<float*>(img_undistorted_32fc1_.data),
                                             T_curr_world,
                                             min_depth,
@@ -78,6 +81,7 @@ bool rmd::Depthmap::setReferenceImage(
   {
     std::lock_guard<std::mutex> lock(ref_img_mutex_);
     img_undistorted_8uc1_.copyTo(ref_img_undistorted_8uc1_);
+    img_undistorted_8uc3_.copyTo(ref_img_undistorted_8uc3_);
     T_world_ref_ = T_curr_world.inv();
   }
 
@@ -153,12 +157,14 @@ const cv::Mat_<int> rmd::Depthmap::getConvergenceMap() const
 
 const cv::Mat rmd::Depthmap::getReferenceImage() const
 {
+  cout << "regular ref frame" <<endl;
   return ref_img_undistorted_8uc1_;
 }
 
 const cv::Mat rmd::Depthmap::getReferenceColorImage() const
 {
-  return img_undistorted_8uc3_;
+  cout << " COLORED ref frame " <<endl;
+  return ref_img_undistorted_8uc3_;
 }
 
 size_t rmd::Depthmap::getConvergedCount() const
