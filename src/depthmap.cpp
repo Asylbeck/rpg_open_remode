@@ -157,7 +157,7 @@ const cv::Mat_<int> rmd::Depthmap::getConvergenceMap() const
 
 const cv::Mat rmd::Depthmap::getReferenceImage() const
 {
-  cout << "regular ref frame" <<endl;
+  // cout << "regular ref frame" <<endl;
   return ref_img_undistorted_8uc1_;
 }
 

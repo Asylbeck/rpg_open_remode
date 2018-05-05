@@ -38,6 +38,8 @@ enum State
 }
 typedef ProcessingStates::State State;
 
+static int MAX_SUPPORTING_FRAME_COUNT_BEFORE_FAILURE = 275;
+
 class DepthmapNode
 {
 public:
@@ -55,6 +57,11 @@ private:
   float max_dist_from_ref_;
   int publish_conv_every_n_;
   int num_msgs_;
+
+  int supporting_frame_count;
+  int total_frame_count = 0;
+  int converged_frame_count = 0;
+  int max_supporting_frame_count;
 
   ros::NodeHandle &nh_;
   std::unique_ptr<rmd::Publisher> publisher_;

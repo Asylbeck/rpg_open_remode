@@ -110,7 +110,7 @@ void rmd::Publisher::publishPointCloud() const
       pcc_->header.frame_id = "/world";
       pcc_->header.stamp = timestamp;
       pub_pcc_.publish(pcc_);
-      std::cout << "INFO: publishing pointcloud, " << pc_->size() << " points" << std::endl;
+      std::cout << "INFO: publishing pointcloud, " << pcc_->size() << " points" << std::endl;
     }
   }
 }
@@ -154,6 +154,6 @@ void rmd::Publisher::publishConvergenceMap()
   {
     cv_image.header.stamp = ros::Time::now();
     conv_publisher_.publish(cv_image.toImageMsg());
-    std::cout << "INFO: publishing convergence map" << std::endl;
+    // std::cout << "INFO: publishing convergence map" << std::endl;
   }
 }

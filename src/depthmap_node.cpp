@@ -134,6 +134,7 @@ void rmd::DepthmapNode::denseInputCallback(
   switch (state_) {
   case rmd::State::TAKE_REFERENCE_FRAME:
   {
+    supporting_frame_count = 0;
     if(depthmap_->setReferenceImage(
          img_8uC1,
          img_8uC3,
@@ -152,13 +153,24 @@ void rmd::DepthmapNode::denseInputCallback(
   }
   case rmd::State::UPDATE:
   {
+    supporting_frame_count++;
+
     depthmap_->update(img_8uC1, T_world_curr.inv());
     depthmap_->inputColorImage(img_8uC3);
     const float perc_conv = depthmap_->getConvergedPercentage();
     const float dist_from_ref = depthmap_->getDistFromRef();
     //std::cout << "INFO: percentage of converged measurements: " << perc_conv << "%" << std::endl;
-    if(perc_conv > ref_compl_perc_ || dist_from_ref > max_dist_from_ref_)
-    {
+    if(supporting_frame_count > rmd::MAX_SUPPORTING_FRAME_COUNT_BEFORE_FAILURE) {
+      std::cout << "INFO: convergence failed after " << supporting_frame_count << "frames. " << std::endl;
+      state_ = State::TAKE_REFERENCE_FRAME;
+    } else if(perc_conv > ref_compl_perc_ || dist_from_ref > max_dist_from_ref_) {
+      total_frame_count += supporting_frame_count;
+      if( supporting_frame_count > max_supporting_frame_count ) {
+        max_supporting_frame_count = supporting_frame_count;
+      }
+      converged_frame_count++;
+      const float ave_frame_count = float( int(float(total_frame_count)*100.0/float(converged_frame_count)))/100.0;
+      std::cout << "INFO: converged after " << supporting_frame_count << "frames. " << ave_frame_count << " frames on average. " << max_supporting_frame_count << " frames MAX." << std::endl;
       state_ = State::TAKE_REFERENCE_FRAME;
       denoiseAndPublishResults();
     }
