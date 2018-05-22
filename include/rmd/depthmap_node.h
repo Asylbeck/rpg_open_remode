@@ -62,7 +62,8 @@ private:
   int total_frame_count = 0;
   int converged_frame_count = 0;
   int max_supporting_frame_count;
-
+  int last_frame_id = -1;
+  
   ros::NodeHandle &nh_;
   std::unique_ptr<rmd::Publisher> publisher_;
 };

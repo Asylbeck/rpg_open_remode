@@ -131,6 +131,11 @@ void rmd::DepthmapNode::denseInputCallback(
   // std::cout << "T_world_curr:" << std::endl;
   // std::cout << T_world_curr << std::endl;
 
+  if( last_frame_id != -1 && dense_input->frame_id != last_frame_id + 1 ) {
+      std::cerr << "ERROR: frame numbers are not sequential -- last: " << last_frame_id << " -- cur: " << dense_input->frame_id << std::endl;
+  }
+  last_frame_id = dense_input->frame_id;
+
   switch (state_) {
   case rmd::State::TAKE_REFERENCE_FRAME:
   {
