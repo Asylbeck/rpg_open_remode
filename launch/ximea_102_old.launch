@@ -4,15 +4,15 @@
     <param name="cam_width" value="1280" />
     <param name="cam_height" value="1024" />
 
-    <param name="cam_fx" value="660.874903" />
-    <param name="cam_cx" value="642.978284" />
-    <param name="cam_fy" value="659.393509" />
-    <param name="cam_cy" value="518.650474" />
+    <param name="cam_fx" value="657.610098" />
+    <param name="cam_cx" value="650.769013" />
+    <param name="cam_fy" value="657.001293" />
+    <param name="cam_cy" value="513.963620" />
 
-    <param name="cam_k1" value="-0.190486" />
-    <param name="cam_k2" value="0.057072" />
-    <param name="cam_r1" value="-0.000878" />
-    <param name="cam_r2" value="-0.000086" />
+    <param name="cam_k1" value="-0.176815" />
+    <param name="cam_k2" value="0.039371" />
+    <param name="cam_r1" value="0.000343" />
+    <param name="cam_r2" value="0.000125" />
 
     <param name="ref_compl_perc" value="50.0" />
     <param name="max_dist_from_ref" value="0.5" />

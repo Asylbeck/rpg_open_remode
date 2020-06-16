@@ -4,9 +4,9 @@
     <param name="cam_width" value="1280" />
     <param name="cam_height" value="1024" />
 
-    <param name="cam_fx" value="1437.463490204911" />
+    <param name="cam_fx" value="518.261818158611" />
     <param name="cam_cx" value="640.0" />
-    <param name="cam_fy" value="1437.463490204911" />
+    <param name="cam_fy" value="414.60945452688884" />
     <param name="cam_cy" value="512.0" />
 
     <param name="cam_k1" value="0.0" />
