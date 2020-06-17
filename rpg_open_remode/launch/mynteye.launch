@@ -1,0 +1,21 @@
+<launch>
+  <node pkg="rpg_open_remode" type="depthmap_node" name="remode" clear_params="true" output="screen">
+
+    <param name="cam_width" value="1280" />
+    <param name="cam_height" value="1024" />
+
+    <param name="cam_fx" value="781.334019" />
+    <param name="cam_cx" value="638.568236" />
+    <param name="cam_fy" value="780.523926" />
+    <param name="cam_cy" value="331.664796" />
+
+    <param name="cam_k1" value="-0.359385" />
+    <param name="cam_k2" value="0.106113" />
+    <param name="cam_r1" value="0.001009" />
+    <param name="cam_r2" value="0.000354" />
+
+    <param name="ref_compl_perc" value="10.0" />
+    <param name="max_dist_from_ref" value="2" />
+    <param name="publish_conv_every_n" value="3" />
+  </node>   
+</launch>
