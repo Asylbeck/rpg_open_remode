@@ -42,7 +42,7 @@ if(BUILD_ROS_NODE)
   ADD_DEFINITIONS(-DBUILD_ROS_NODE)
 endif(BUILD_ROS_NODE)
 
-option(BUILD_TESTS "Build test programs" ON)
+option(BUILD_TESTS "Build test programs" OFF)
 if(BUILD_TESTS)
   ADD_DEFINITIONS(-DRMD_BUILD_TESTS)
 endif(BUILD_TESTS)
@@ -53,6 +53,7 @@ ADD_DEFINITIONS(-DRMD_CORR_PATCH_SIDE=5)
 ADD_DEFINITIONS(-DRMD_MAX_EXTENT_EPIPOLAR_SEARCH=100)
 
 find_package(OpenCV REQUIRED)
+message("opencv_lib: ${OpenCV_LIBRARIES}")
 find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 
@@ -130,77 +131,77 @@ target_link_libraries(
   rpg_open_remode_cuda
 )
 # Build a node to publish the dataset
-add_executable(
-  dataset_publisher
-  test/dataset.cpp
-  test/publish_dataset.cpp
-)
-target_link_libraries(
-  dataset_publisher
-  ${LINK_LIBS}
-)
+# add_executable(
+#   dataset_publisher
+#   test/dataset.cpp
+#   test/publish_dataset.cpp
+# )
+# target_link_libraries(
+#   dataset_publisher
+#   ${LINK_LIBS}
+# )
 endif(BUILD_ROS_NODE)
 
 
 
 # GTest
 if(BUILD_TESTS)
-enable_testing()
-#find_package(GTest REQUIRED)
-# Accepts the following variable as input:
-# GTEST_ROOT - (as a CMake or environment variable)
-#              The root directory of the gtest install prefix
+# enable_testing()
+# #find_package(GTest REQUIRED)
+# # Accepts the following variable as input:
+# # GTEST_ROOT - (as a CMake or environment variable)
+# #              The root directory of the gtest install prefix
 
-include_directories(${GTEST_ROOT}/include)
-list(APPEND GTEST_LINK_LIBS
-  ${GTEST_BOTH_LIBRARIES}
-  pthread
-)
+# include_directories(${GTEST_ROOT}/include)
+# list(APPEND GTEST_LINK_LIBS
+#   ${GTEST_BOTH_LIBRARIES}
+#   pthread
+# )
 
-## Test on dataset
-add_executable(
-    dataset_main
-    test/dataset_main.cpp
-    test/dataset.cpp
-)
+# ## Test on dataset
+# add_executable(
+#     dataset_main
+#     test/dataset_main.cpp
+#     test/dataset.cpp
+# )
 
-target_link_libraries(
-    dataset_main
-    rpg_open_remode
-    rpg_open_remode_cuda
-)
-CUDA_ADD_LIBRARY(
-    rpg_open_remode_test
-    test/copy.cu
-    test/sobel.cu
-)
+# target_link_libraries(
+#     dataset_main
+#     rpg_open_remode
+#     rpg_open_remode_cuda
+# )
+# CUDA_ADD_LIBRARY(
+#     rpg_open_remode_test
+#     test/copy.cu
+#     test/sobel.cu
+# )
 
-# Set sourcefiles for the tests
-list(APPEND TEST_SOURCE_FILES
-  test/device_image_test.cpp
-  test/seed_matrix_test.cpp
-  test/main_test.cpp
-  test/dataset.cpp
-  test/epipolar_test.cpp
-  test/reduction_test.cpp
-)
+# # Set sourcefiles for the tests
+# list(APPEND TEST_SOURCE_FILES
+#   test/device_image_test.cpp
+#   test/seed_matrix_test.cpp
+#   test/main_test.cpp
+#   test/dataset.cpp
+#   test/epipolar_test.cpp
+#   test/reduction_test.cpp
+# )
 
-add_executable(
-  all_tests
-  ${TEST_SOURCE_FILES}
-)
+# add_executable(
+#   all_tests
+#   ${TEST_SOURCE_FILES}
+# )
 
-target_link_libraries(
-  all_tests
-  rpg_open_remode
-  rpg_open_remode_cuda
-  rpg_open_remode_test
-  ${GTEST_LINK_LIBS}
-)
+# target_link_libraries(
+#   all_tests
+#   rpg_open_remode
+#   rpg_open_remode_cuda
+#   rpg_open_remode_test
+#   ${GTEST_LINK_LIBS}
+# )
 
-# Allow run of 'make test'
-add_test(
-  RMDCuTests
-  all_tests --gtest_repeat=2
-)
+# # Allow run of 'make test'
+# add_test(
+#   RMDCuTests
+#   all_tests --gtest_repeat=2
+# )
 endif(BUILD_TESTS)

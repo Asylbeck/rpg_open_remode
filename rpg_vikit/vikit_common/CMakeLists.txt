@@ -60,6 +60,7 @@ LIST(APPEND SOURCEFILES src/atan_camera.cpp
                         src/img_align.cpp)
 
 # Create vikit library
+SET(Sophus_LIBRARIES libSophus.so)
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCEFILES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   ${OpenCV_LIBS}
